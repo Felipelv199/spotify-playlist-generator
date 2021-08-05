@@ -19,11 +19,14 @@
       {
         "ts": "never"
       }
-    ]
+    ],
+    "linebreak-style": 0
   },
   "settings": {
     "import/resolver": {
-      "typescript": {}
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
     }
   }
 }
