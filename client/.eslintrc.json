@@ -24,7 +24,10 @@
         "ts": "never",
         "tsx": "never"
       }
-    ]
+    ],
+    "linebreak-style": "off",
+    "object-curly-newline": "off",
+    "camelcase": "off"
   },
   "settings": {
     "import/resolver": {
