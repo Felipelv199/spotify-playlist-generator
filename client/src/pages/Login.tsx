@@ -4,7 +4,7 @@ import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 
-function App(props: any) {
+const Login = (props: any) => {
   const history = useHistory();
   const { location } = props;
   const { search } = location;
@@ -76,6 +76,6 @@ function App(props: any) {
       </Alert>
     </Container>
   );
-}
+};
 
-export default App;
+export default Login;
