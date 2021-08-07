@@ -1,28 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
 
-function App(props: any) {
+const Login = (props: any) => {
   const history = useHistory();
   const { location } = props;
   const { search } = location;
-
   const [errorMessage, setErrorMessage] = useState('');
+  const [show, setShow] = useState(false);
+
   const authenticateSpotify = async () => {
-    setErrorMessage('');
+    setShow(false);
     try {
       const response = await axios.get('http://localhost:8080/spotify/auth');
       const { data } = response;
       window.location.href = data.url;
     } catch (error) {
       const { response } = error;
-      const { data } = response;
-      const { message } = data;
-      setErrorMessage(message);
+      if (!response) {
+        setErrorMessage(error.message);
+      } else {
+        const { data } = response;
+        const { message } = data;
+        setErrorMessage(message);
+      }
+      setShow(true);
     }
   };
   const tokenSpotify = async (code: string) => {
-    setErrorMessage('');
+    setShow(false);
     try {
       const response = await axios.post('http://localhost:8080/spotify/token', {
         code,
@@ -32,11 +40,17 @@ function App(props: any) {
       history.push('/profile');
     } catch (error) {
       const { response } = error;
-      const { data } = response;
-      const { message } = data;
-      setErrorMessage(message);
+      if (!response) {
+        setErrorMessage(error.message);
+      } else {
+        const { data } = response;
+        const { message } = data;
+        setErrorMessage(message);
+      }
+      setShow(true);
     }
   };
+
   useEffect(() => {
     if (!window.localStorage.getItem('token')) {
       const paramsString = search.slice(1);
@@ -49,15 +63,19 @@ function App(props: any) {
       }
     }
   }, [search]);
-  return (
-    <div className="App">
-      {errorMessage !== '' && (
-        <div>
-          <p>{errorMessage}</p>
-        </div>
-      )}
-    </div>
-  );
-}
 
-export default App;
+  return (
+    <Container className="App">
+      <Alert
+        variant="danger"
+        onClose={() => setShow(false)}
+        show={show}
+        dismissible
+      >
+        {errorMessage}
+      </Alert>
+    </Container>
+  );
+};
+
+export default Login;
