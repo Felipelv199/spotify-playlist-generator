@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import Alert from 'react-bootstrap/Alert';
+import Container from 'react-bootstrap/Container';
 
 interface Image {
   height: number;
@@ -19,7 +21,10 @@ const Profile = () => {
   const history = useHistory();
   const [information, setInformation] = useState<ProfileInfo>();
   const [errorMessage, setErrorMessage] = useState('');
+  const [show, setShow] = useState(false);
+
   const getProfileInfo = async (token: string) => {
+    setShow(false);
     try {
       const response = await axios.get(
         'http://localhost:8080/spotify/users/me',
@@ -32,11 +37,17 @@ const Profile = () => {
       setInformation({ name: display_name, images, product, email });
     } catch (error) {
       const { response } = error;
-      const { data } = response;
-      const { message } = data;
-      setErrorMessage(message);
+      if (!response) {
+        setErrorMessage(error.message);
+      } else {
+        const { data } = response;
+        const { message } = data;
+        setErrorMessage(message);
+      }
+      setShow(true);
     }
   };
+
   useEffect(() => {
     const token = window.localStorage.getItem('token');
     if (token !== null) {
@@ -48,14 +59,18 @@ const Profile = () => {
   if (!information) {
     return null;
   }
+
   const { name, email, product, images } = information;
   return (
-    <div>
-      {errorMessage !== '' && (
-        <div>
-          <p>{errorMessage}</p>
-        </div>
-      )}
+    <Container>
+      <Alert
+        variant="danger"
+        onClose={() => setShow(false)}
+        show={show}
+        dismissible
+      >
+        {errorMessage}
+      </Alert>
       <h1>Profile</h1>
       <div>
         {images.map((image, index) => (
@@ -65,7 +80,7 @@ const Profile = () => {
         <p>{email}</p>
         <p>{product}</p>
       </div>
-    </div>
+    </Container>
   );
 };
 
