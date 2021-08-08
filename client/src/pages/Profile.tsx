@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
+import Card from 'react-bootstrap/Card';
 
 interface Image {
   height: number;
@@ -16,6 +17,8 @@ interface ProfileInfo {
   images: [Image];
   product: string;
 }
+
+const { Img, Body, Text, Title, Subtitle } = Card;
 
 const Profile = () => {
   const history = useHistory();
@@ -62,7 +65,14 @@ const Profile = () => {
 
   const { name, email, product, images } = information;
   return (
-    <Container>
+    <Container
+      style={{
+        minHeight: 'calc(100vh - 56px)',
+        alignItems: 'center',
+        display: 'grid',
+        justifyContent: 'center',
+      }}
+    >
       <Alert
         variant="danger"
         onClose={() => setShow(false)}
@@ -71,15 +81,44 @@ const Profile = () => {
       >
         {errorMessage}
       </Alert>
-      <h1>Profile</h1>
-      <div>
+      <Card
+        bg="dark"
+        border="dark"
+        text="secondary"
+        className="align-items-center"
+        style={{
+          padding: 25,
+          boxShadow:
+            '-10px 0px 13px -7px #000000, 10px 0px 13px -7px #000000, -2px 2px 15px 6px rgb(0 0 0 / 0%)',
+        }}
+      >
         {images.map((image, index) => (
-          <img key={index.toString()} src={image.url} alt="avatar" />
+          <Img
+            key={index.toString()}
+            src={image.url}
+            alt="avatar"
+            style={{ width: 250 }}
+          />
         ))}
-        <p>{name}</p>
-        <p>{email}</p>
-        <p>{product}</p>
-      </div>
+        <Body style={{ width: '100%' }}>
+          <Title style={{ textAlign: 'center' }}>
+            <strong>{name}</strong>
+          </Title>
+          <br />
+          <Subtitle>
+            <strong>Display Name</strong>
+          </Subtitle>
+          <Text>{name}</Text>
+          <Subtitle>
+            <strong>Email</strong>
+          </Subtitle>
+          <Text>{email}</Text>
+          <Subtitle>
+            <strong>Subscription</strong>
+          </Subtitle>
+          <Text>{product}</Text>
+        </Body>
+      </Card>
     </Container>
   );
 };
