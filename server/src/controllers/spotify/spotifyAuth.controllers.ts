@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import axios from 'axios';
 import qs from 'query-string';
 
-export const spotifyAuth = (req: Request, res: Response) => {
-  const scope = 'user-read-private user-read-email';
+export const spotifyAuth = (_: Request, res: Response) => {
+  const scope = 'user-read-private user-read-email user-library-read';
   const redirectUri = process.env.REDIRECT_URI;
   const clientId = process.env.CLIENT_ID;
   const queryParams = qs.stringify({
