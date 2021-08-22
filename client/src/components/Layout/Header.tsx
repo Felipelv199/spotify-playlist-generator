@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
+import { HOME, LOGIN, PROFILE } from '../../statics/routes/routes.json';
 
 const { Brand } = Navbar;
 const { Link } = Nav;
@@ -11,9 +12,9 @@ const Header = () => (
     <Container fluid>
       <Brand>Playlist Generator</Brand>
       <Nav className="me-auto">
-        <Link href="/">Home</Link>
-        <Link href="/login">Login</Link>
-        <Link href="/profile">Profile</Link>
+        <Link href={HOME}>Home</Link>
+        <Link href={LOGIN}>Login</Link>
+        <Link href={PROFILE}>Profile</Link>
       </Nav>
     </Container>
   </Navbar>

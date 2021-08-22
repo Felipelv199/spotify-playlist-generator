@@ -4,6 +4,7 @@ import axios from 'axios';
 import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
+import { LOGIN } from '../statics/routes/routes.json';
 
 interface Image {
   height: number;
@@ -56,7 +57,7 @@ const Profile = () => {
     if (token !== null) {
       getProfileInfo(token);
     } else {
-      history.push('/login');
+      history.push(LOGIN);
     }
   }, []);
   if (!information) {
