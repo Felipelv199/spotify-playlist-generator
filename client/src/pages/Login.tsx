@@ -3,6 +3,8 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
+import MessageSpinner from '../components/utils/MessageSpinner';
+import { PROFILE } from '../statics/routes/routes.json';
 
 const Login = (props: any) => {
   const history = useHistory();
@@ -29,6 +31,7 @@ const Login = (props: any) => {
       setShow(true);
     }
   };
+
   const tokenSpotify = async (code: string) => {
     setShow(false);
     try {
@@ -37,7 +40,7 @@ const Login = (props: any) => {
       });
       const { data } = response;
       window.localStorage.setItem('token', data.token);
-      history.push('/profile');
+      history.push(PROFILE);
     } catch (error) {
       const { response } = error;
       if (!response) {
@@ -61,16 +64,22 @@ const Login = (props: any) => {
       } else {
         tokenSpotify(code);
       }
+    } else {
+      history.push(PROFILE);
     }
   }, [search]);
 
   return (
-    <Container className="App">
+    <Container>
+      {!show && <MessageSpinner message="Authenticating..." />}
       <Alert
         variant="danger"
         onClose={() => setShow(false)}
         show={show}
         dismissible
+        style={{
+          marginTop: 16,
+        }}
       >
         {errorMessage}
       </Alert>
