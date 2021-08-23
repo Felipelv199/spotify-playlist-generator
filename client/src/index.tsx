@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
+import { HOME, LOGIN, PROFILE } from './statics/routes/routes.json';
 import 'bootstrap/dist/css/bootstrap.css';
 
 ReactDOM.render(
@@ -12,9 +13,9 @@ ReactDOM.render(
     <Layout>
       <BrowserRouter>
         <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/profile" component={Profile} />
+          <Route exact path={HOME} component={Home} />
+          <Route exact path={LOGIN} component={Login} />
+          <Route exact path={PROFILE} component={Profile} />
         </Switch>
       </BrowserRouter>
     </Layout>

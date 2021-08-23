@@ -5,6 +5,7 @@ import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import { LOGIN } from '../statics/routes/routes.json';
+import { SPOTIFY_USERS_ME } from '../statics/routes/server.json';
 
 interface Image {
   height: number;
@@ -30,12 +31,9 @@ const Profile = () => {
   const getProfileInfo = async (token: string) => {
     setShow(false);
     try {
-      const response = await axios.get(
-        'http://localhost:8080/spotify/users/me',
-        {
-          params: { token },
-        },
-      );
+      const response = await axios.get(SPOTIFY_USERS_ME, {
+        params: { token },
+      });
       const { data } = response;
       const { display_name, images, product, email } = data;
       setInformation({ name: display_name, images, product, email });

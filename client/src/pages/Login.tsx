@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import MessageSpinner from '../components/utils/MessageSpinner';
 import { PROFILE } from '../statics/routes/routes.json';
+import { SPOTIFY_AUTH, SPOTIFY_TOKEN } from '../statics/routes/server.json';
 
 const Login = (props: any) => {
   const history = useHistory();
@@ -16,7 +17,7 @@ const Login = (props: any) => {
   const authenticateSpotify = async () => {
     setShow(false);
     try {
-      const response = await axios.get('http://localhost:8080/spotify/auth');
+      const response = await axios.get(SPOTIFY_AUTH);
       const { data } = response;
       window.location.href = data.url;
     } catch (error) {
@@ -35,7 +36,7 @@ const Login = (props: any) => {
   const tokenSpotify = async (code: string) => {
     setShow(false);
     try {
-      const response = await axios.post('http://localhost:8080/spotify/token', {
+      const response = await axios.post(SPOTIFY_TOKEN, {
         code,
       });
       const { data } = response;
