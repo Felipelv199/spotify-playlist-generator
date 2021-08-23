@@ -1,0 +1,5 @@
+{
+  "SPOTIFY_USERS_ME": "http://localhost:8080/spotify/users/me",
+  "SPOTIFY_AUTH": "http://localhost:8080/spotify/auth",
+  "SPOTIFY_TOKEN": "http://localhost:8080/spotify/token"
+}
