@@ -1,1 +1,6 @@
-{ "HOME": "/", "LOGIN": "/login", "PROFILE": "/profile" }
+{
+  "HOME": "/",
+  "LOGIN": "/login",
+  "PROFILE": "/profile",
+  "DASHBOARD": "/dasboard"
+}
