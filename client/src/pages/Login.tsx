@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import MessageSpinner from '../components/utils/MessageSpinner';
 import { PROFILE } from '../statics/routes/routes.json';
 import { SPOTIFY_AUTH, SPOTIFY_TOKEN } from '../statics/routes/server.json';
+import { actionCreators, State } from '../state';
 
 const Login = (props: any) => {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const { login } = bindActionCreators(actionCreators, dispatch);
+  const auth = useSelector((state: State) => state.auth);
   const { location } = props;
   const { search } = location;
   const [errorMessage, setErrorMessage] = useState('');
@@ -40,7 +46,9 @@ const Login = (props: any) => {
         code,
       });
       const { data } = response;
-      window.localStorage.setItem('token', data.token);
+      const { token } = data;
+      window.localStorage.setItem('token', token);
+      login(token);
       history.push(PROFILE);
     } catch (error) {
       const { response } = error;
@@ -56,19 +64,25 @@ const Login = (props: any) => {
   };
 
   useEffect(() => {
-    if (!window.localStorage.getItem('token')) {
-      const paramsString = search.slice(1);
-      const params = new URLSearchParams(paramsString);
-      const code = params.get('code');
-      if (code === null) {
-        authenticateSpotify();
+    if (!auth) {
+      const token = window.localStorage.getItem('token');
+      if (!token) {
+        const paramsString = search.slice(1);
+        const params = new URLSearchParams(paramsString);
+        const code = params.get('code');
+        if (code === null) {
+          authenticateSpotify();
+        } else {
+          tokenSpotify(code);
+        }
       } else {
-        tokenSpotify(code);
+        login(token);
+        history.push(PROFILE);
       }
     } else {
       history.push(PROFILE);
     }
-  }, [search]);
+  }, [search, auth]);
 
   return (
     <Container>
