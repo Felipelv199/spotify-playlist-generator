@@ -7,5 +7,6 @@ export const login = (token: string) => (dispatch: Dispatch<AuthAction>) => {
 };
 
 export const logout = () => (dispatch: Dispatch<AuthAction>) => {
+  window.localStorage.removeItem('token');
   dispatch({ type: AuthE.LOGOUT });
 };
