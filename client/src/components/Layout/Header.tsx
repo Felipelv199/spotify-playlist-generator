@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -11,12 +12,14 @@ import {
   PROFILE,
   DASHBOARD,
 } from '../../statics/routes/routes.json';
-import { State } from '../../state';
+import { State, actionCreators } from '../../state';
 
 const { Brand } = Navbar;
 
 const Header = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const { logout } = bindActionCreators(actionCreators, dispatch);
   const [logged, setLogged] = useState(false);
   const auth = useSelector((state: State) => state.auth);
 
@@ -59,6 +62,9 @@ const Header = () => {
                 onClick={() => history.push(DASHBOARD)}
               >
                 Dashboard
+              </Button>
+              <Button variant="dark" size="sm" onClick={() => logout()}>
+                Logout
               </Button>
             </>
           )}
