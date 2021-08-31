@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import { HOME, LOGIN, PROFILE } from './statics/routes/routes.json';
 import { store } from './state/index';
 import 'bootstrap/dist/css/bootstrap.css';
+import ProtectedComponent from './components/auth/ProtectedComponent';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,7 +19,7 @@ ReactDOM.render(
           <Switch>
             <Route exact path={HOME} component={Home} />
             <Route exact path={LOGIN} component={Login} />
-            <Route exact path={PROFILE} component={Profile} />
+            <ProtectedComponent exact path={PROFILE} Component={Profile} />
           </Switch>
         </Layout>
       </BrowserRouter>
