@@ -19,17 +19,21 @@ const { Brand } = Navbar;
 const Header = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { logout } = bindActionCreators(actionCreators, dispatch);
+  const { logout, login } = bindActionCreators(actionCreators, dispatch);
   const [logged, setLogged] = useState(false);
   const auth = useSelector((state: State) => state.auth);
+  const token = window.localStorage.getItem('token');
 
   useEffect(() => {
+    if (token) {
+      login(token);
+    }
     if (!auth) {
       setLogged(false);
     } else {
       setLogged(true);
     }
-  }, [auth]);
+  }, [auth, login, token]);
 
   return (
     <Navbar bg="dark" variant="dark">
