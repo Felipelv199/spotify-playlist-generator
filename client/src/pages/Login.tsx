@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,29 +39,32 @@ const Login = (props: any) => {
     }
   };
 
-  const tokenSpotify = async (code: string) => {
-    setShow(false);
-    try {
-      const response = await axios.post(SPOTIFY_TOKEN, {
-        code,
-      });
-      const { data } = response;
-      const { token } = data;
-      window.localStorage.setItem('token', token);
-      login(token);
-      history.push(PROFILE);
-    } catch (error) {
-      const { response } = error;
-      if (!response) {
-        setErrorMessage(error.message);
-      } else {
+  const tokenSpotify = useCallback(
+    async (code: string) => {
+      setShow(false);
+      try {
+        const response = await axios.post(SPOTIFY_TOKEN, {
+          code,
+        });
         const { data } = response;
-        const { message } = data;
-        setErrorMessage(message);
+        const { token } = data;
+        window.localStorage.setItem('token', token);
+        login(token);
+        history.push(PROFILE);
+      } catch (error) {
+        const { response } = error;
+        if (!response) {
+          setErrorMessage(error.message);
+        } else {
+          const { data } = response;
+          const { message } = data;
+          setErrorMessage(message);
+        }
+        setShow(true);
       }
-      setShow(true);
-    }
-  };
+    },
+    [history, login],
+  );
 
   useEffect(() => {
     if (!auth) {
@@ -82,7 +85,7 @@ const Login = (props: any) => {
     } else {
       history.push(PROFILE);
     }
-  }, [search, auth]);
+  }, [search, auth, history, login, tokenSpotify]);
 
   return (
     <Container>
