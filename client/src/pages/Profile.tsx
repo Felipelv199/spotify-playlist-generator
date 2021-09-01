@@ -57,7 +57,7 @@ const Profile = () => {
     } else {
       history.push(LOGIN);
     }
-  }, []);
+  }, [history]);
   if (!information) {
     return null;
   }
