@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import { LOGIN } from '../statics/routes/routes.json';
 import { SPOTIFY_USERS_ME } from '../statics/routes/server.json';
+import { actionCreators } from '../state';
+import MessageSpinner from '../components/utils/MessageSpinner';
 
 interface Image {
   height: number;
@@ -24,42 +28,47 @@ const { Img, Body, Text, Title, Subtitle } = Card;
 
 const Profile = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const { logout } = bindActionCreators(actionCreators, dispatch);
   const [information, setInformation] = useState<ProfileInfo>();
   const [errorMessage, setErrorMessage] = useState('');
   const [show, setShow] = useState(false);
 
-  const getProfileInfo = async (token: string) => {
-    setShow(false);
-    try {
-      const response = await axios.get(SPOTIFY_USERS_ME, {
-        params: { token },
-      });
-      const { data } = response;
-      const { display_name, images, product, email } = data;
-      setInformation({ name: display_name, images, product, email });
-    } catch (error) {
-      const { response } = error;
-      if (!response) {
-        setErrorMessage(error.message);
-      } else {
+  const getProfileInfo = useCallback(
+    async (token: string) => {
+      setShow(false);
+      try {
+        const response = await axios.get(SPOTIFY_USERS_ME, {
+          params: { token },
+        });
         const { data } = response;
-        const { message } = data;
-        setErrorMessage(message);
+        const { display_name, images, product, email } = data;
+        setInformation({ name: display_name, images, product, email });
+      } catch (error) {
+        const { response } = error;
+        const { status, statusText } = response;
+        if (status === 401) {
+          logout();
+        } else {
+          setErrorMessage(statusText);
+          setShow(true);
+        }
       }
-      setShow(true);
-    }
-  };
+    },
+    [logout],
+  );
 
   useEffect(() => {
     const token = window.localStorage.getItem('token');
-    if (token !== null) {
+    if (token !== null && !information && !show) {
       getProfileInfo(token);
-    } else {
+    } else if (token === null) {
       history.push(LOGIN);
     }
-  }, [history]);
+  }, [history, getProfileInfo, information, show]);
+
   if (!information) {
-    return null;
+    return <MessageSpinner message="Loading" />;
   }
 
   const { name, email, product, images } = information;
