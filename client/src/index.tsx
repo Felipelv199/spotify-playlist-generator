@@ -10,6 +10,7 @@ import { HOME, LOGIN, PROFILE } from './statics/routes/routes.json';
 import { store } from './state/index';
 import 'bootstrap/dist/css/bootstrap.css';
 import ProtectedComponent from './components/auth/ProtectedComponent';
+import NotFound from './pages/NotFound';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -20,6 +21,7 @@ ReactDOM.render(
             <Route exact path={HOME} component={Home} />
             <Route exact path={LOGIN} component={Login} />
             <ProtectedComponent exact path={PROFILE} Component={Profile} />
+            <Route component={NotFound} />
           </Switch>
         </Layout>
       </BrowserRouter>
