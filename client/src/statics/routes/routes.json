@@ -2,5 +2,5 @@
   "HOME": "/",
   "LOGIN": "/login",
   "PROFILE": "/profile",
-  "DASHBOARD": "/dasboard"
+  "TRACKS": "/tracks"
 }
