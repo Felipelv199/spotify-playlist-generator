@@ -6,12 +6,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
-import {
-  HOME,
-  LOGIN,
-  PROFILE,
-  DASHBOARD,
-} from '../../statics/routes/routes.json';
+import { HOME, LOGIN, PROFILE, TRACKS } from '../../statics/routes/routes.json';
 import { State, actionCreators } from '../../state';
 
 const { Brand } = Navbar;
@@ -63,9 +58,9 @@ const Header = () => {
               <Button
                 variant="dark"
                 size="sm"
-                onClick={() => history.push(DASHBOARD)}
+                onClick={() => history.push(TRACKS)}
               >
-                Dashboard
+                Tracks
               </Button>
               <Button variant="dark" size="sm" onClick={() => logout()}>
                 Logout
