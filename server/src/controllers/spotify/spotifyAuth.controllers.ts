@@ -1,9 +1,11 @@
+/* eslint-disable operator-linebreak */
 import { Request, Response } from 'express';
 import axios from 'axios';
 import qs from 'query-string';
 
 export const spotifyAuth = (_: Request, res: Response) => {
-  const scope = 'user-read-private user-read-email user-library-read';
+  const scope =
+    'user-read-private user-read-email user-library-read playlist-modify-private playlist-modify-public';
   const redirectUri = process.env.REDIRECT_URI;
   const clientId = process.env.CLIENT_ID;
   const queryParams = qs.stringify({
@@ -40,6 +42,6 @@ export const spotifyToken = async (req: Request, res: Response) => {
     const { data } = response;
     res.json({ token: data.access_token });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: (error as any).message });
   }
 };

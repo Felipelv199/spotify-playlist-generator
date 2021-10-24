@@ -15,7 +15,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
     const { data } = response;
     res.json(data);
   } catch (error) {
-    const { response, message } = error;
+    const { response, message } = error as any;
     const { status } = response;
     res.status(status).json({ message });
   }
