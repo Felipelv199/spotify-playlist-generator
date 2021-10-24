@@ -28,6 +28,7 @@ interface Album {
 interface Track {
   name: string;
   album: Album;
+  id: string;
 }
 
 interface TaskItem {
@@ -51,7 +52,7 @@ const getError = (error: any) => {
 };
 
 const getTrackFromResponseData = (itemTrack: any): Track => {
-  const { album, name } = itemTrack;
+  const { album, name, id } = itemTrack;
   const { artists, images } = album;
   const albumArtists: Artist[] = artists.map((artist: any) => ({
     name: artist.name,
@@ -70,7 +71,7 @@ const getTrackFromResponseData = (itemTrack: any): Track => {
     genres: [],
     images: albumImages,
   };
-  return { album: albumTrack, name };
+  return { album: albumTrack, name, id };
 };
 
 const parseTaskResponseData = (data: any): Track[] => {
