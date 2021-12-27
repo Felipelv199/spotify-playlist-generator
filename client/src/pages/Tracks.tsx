@@ -13,6 +13,8 @@ import { State, actionCreators } from '../state';
 import tableHeaders from '../statics/pages/tracks/tableHeaders.json';
 import DropdownFilter from '../components/utils/DropdownFilter';
 import MessageSpinner from '../components/utils/MessageSpinner';
+import CreatePlaylistForm from '../components/utils/CreatePlaylistForm';
+import appError from '../utils/appError';
 
 const Tracks = () => {
   const dispatch = useDispatch();
@@ -44,14 +46,11 @@ const Tracks = () => {
       newGenres.sort();
       setGenres(newGenres);
     } catch (error) {
-      const { response } = error as any;
-      const { status, statusText } = response;
-      if (status === 401) {
+      if (appError.isUnauthorized(error)) {
         logout();
-      } else {
-        setErrorMessage(statusText);
-        setDisplayAlert(true);
       }
+      setErrorMessage(appError.onError(error));
+      setDisplayAlert(true);
     }
   }, [token, logout]);
 
@@ -86,7 +85,7 @@ const Tracks = () => {
     if (!tracks) {
       getTracks();
     }
-  }, [getTracks, tracks]);
+  }, [getTracks, tracks, toggleInnerHTML]);
 
   if (!tracks) {
     return (
@@ -106,13 +105,29 @@ const Tracks = () => {
 
   return (
     <Container>
+      <Alert
+        variant="danger"
+        onClose={() => setDisplayAlert(false)}
+        show={displayAlert}
+        dismissible
+      >
+        {errorMessage}
+      </Alert>
       <h1>Tracks</h1>
       <Row>
-        <Col xs="auto" className="justify-content-end">
+        <Col className="justify-content-end">
           <DropdownFilter
             genres={genres}
             toggleInnerHTML={toggleInnerHTML}
             setToggleInnerHTML={setToggleInnerHTML}
+          />
+        </Col>
+        <Col className="justify-content-end">
+          <CreatePlaylistForm
+            tracks={tracks}
+            toggleInnerHTML={toggleInnerHTML}
+            setErrorMessage={setErrorMessage}
+            setDisplayAlert={setDisplayAlert}
           />
         </Col>
       </Row>

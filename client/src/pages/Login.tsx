@@ -9,39 +9,21 @@ import MessageSpinner from '../components/utils/MessageSpinner';
 import { PROFILE } from '../statics/routes/routes.json';
 import { SPOTIFY_AUTH, SPOTIFY_TOKEN } from '../statics/routes/server.json';
 import { actionCreators, State } from '../state';
+import appError from '../utils/appError';
 
 const Login = (props: any) => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { login } = bindActionCreators(actionCreators, dispatch);
+  const { login, logout } = bindActionCreators(actionCreators, dispatch);
   const auth = useSelector((state: State) => state.auth);
   const { location } = props;
   const { search } = location;
   const [errorMessage, setErrorMessage] = useState('');
-  const [show, setShow] = useState(false);
-
-  const authenticateSpotify = async () => {
-    setShow(false);
-    try {
-      const response = await axios.get(SPOTIFY_AUTH);
-      const { data } = response;
-      window.location.href = data.url;
-    } catch (error) {
-      const { response } = error;
-      if (!response) {
-        setErrorMessage(error.message);
-      } else {
-        const { data } = response;
-        const { message } = data;
-        setErrorMessage(message);
-      }
-      setShow(true);
-    }
-  };
+  const [displayAlert, setDisplayAlert] = useState(false);
 
   const tokenSpotify = useCallback(
     async (code: string) => {
-      setShow(false);
+      setDisplayAlert(false);
       try {
         const response = await axios.post(SPOTIFY_TOKEN, {
           code,
@@ -52,21 +34,31 @@ const Login = (props: any) => {
         login(token);
         history.push(PROFILE);
       } catch (error) {
-        const { response } = error;
-        if (!response) {
-          setErrorMessage(error.message);
-        } else {
-          const { data } = response;
-          const { message } = data;
-          setErrorMessage(message);
+        if (appError.isUnauthorized(error)) {
+          logout();
         }
-        setShow(true);
+        setErrorMessage(appError.onError(error));
+        setDisplayAlert(true);
       }
     },
-    [history, login],
+    [history, login, logout],
   );
 
   useEffect(() => {
+    const authenticateSpotify = async () => {
+      setDisplayAlert(false);
+      try {
+        const response = await axios.get(SPOTIFY_AUTH);
+        const { data } = response;
+        window.location.href = data.url;
+      } catch (error) {
+        if (appError.isUnauthorized(error)) {
+          logout();
+        }
+        setErrorMessage(appError.onError(error));
+        setDisplayAlert(true);
+      }
+    };
     if (!auth) {
       const token = window.localStorage.getItem('token');
       if (!token) {
@@ -85,15 +77,15 @@ const Login = (props: any) => {
     } else {
       history.push(PROFILE);
     }
-  }, [search, auth, history, login, tokenSpotify]);
+  }, [search, auth, history, login, tokenSpotify, logout]);
 
   return (
     <Container>
-      {!show && <MessageSpinner message="Authenticating..." />}
+      {!displayAlert && <MessageSpinner message="Authenticating..." />}
       <Alert
         variant="danger"
-        onClose={() => setShow(false)}
-        show={show}
+        onClose={() => setDisplayAlert(false)}
+        show={displayAlert}
         dismissible
         style={{
           marginTop: 16,

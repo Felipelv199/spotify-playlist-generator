@@ -5,3 +5,7 @@ export enum AuthE {
   LOGIN = 'LOGIN',
   LOGOUT = 'LOGOUT',
 }
+
+export enum ProfileE {
+  SET_PROFILE = 'SET_PROFILE',
+}
