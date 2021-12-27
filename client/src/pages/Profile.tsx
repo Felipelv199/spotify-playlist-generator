@@ -10,6 +10,7 @@ import { LOGIN } from '../statics/routes/routes.json';
 import { SPOTIFY_USERS_ME } from '../statics/routes/server.json';
 import { actionCreators } from '../state';
 import MessageSpinner from '../components/utils/MessageSpinner';
+import appError from '../utils/appError';
 
 interface Image {
   height: number;
@@ -32,11 +33,11 @@ const Profile = () => {
   const { logout } = bindActionCreators(actionCreators, dispatch);
   const [information, setInformation] = useState<ProfileInfo>();
   const [errorMessage, setErrorMessage] = useState('');
-  const [show, setShow] = useState(false);
+  const [displayAlert, setDisplayAlert] = useState(false);
 
   const getProfileInfo = useCallback(
     async (token: string) => {
-      setShow(false);
+      setDisplayAlert(false);
       try {
         const response = await axios.get(SPOTIFY_USERS_ME, {
           params: { token },
@@ -45,14 +46,11 @@ const Profile = () => {
         const { display_name, images, product, email } = data;
         setInformation({ name: display_name, images, product, email });
       } catch (error) {
-        const { response } = error;
-        const { status, statusText } = response;
-        if (status === 401) {
+        if (appError.isUnauthorized(error)) {
           logout();
-        } else {
-          setErrorMessage(statusText);
-          setShow(true);
         }
+        setErrorMessage(appError.onError(error));
+        setDisplayAlert(true);
       }
     },
     [logout],
@@ -60,18 +58,19 @@ const Profile = () => {
 
   useEffect(() => {
     const token = window.localStorage.getItem('token');
-    if (token !== null && !information && !show) {
+    if (token !== null && !information && !displayAlert) {
       getProfileInfo(token);
     } else if (token === null) {
       history.push(LOGIN);
     }
-  }, [history, getProfileInfo, information, show]);
+  }, [history, getProfileInfo, information, displayAlert]);
 
   if (!information) {
     return <MessageSpinner message="Loading" />;
   }
 
   const { name, email, product, images } = information;
+
   return (
     <Container
       style={{
@@ -83,8 +82,8 @@ const Profile = () => {
     >
       <Alert
         variant="danger"
-        onClose={() => setShow(false)}
-        show={show}
+        onClose={() => setDisplayAlert(false)}
+        show={displayAlert}
         dismissible
       >
         {errorMessage}
