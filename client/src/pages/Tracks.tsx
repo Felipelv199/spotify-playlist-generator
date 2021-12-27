@@ -13,7 +13,7 @@ import { State, actionCreators } from '../state';
 import tableHeaders from '../statics/pages/tracks/tableHeaders.json';
 import DropdownFilter from '../components/utils/DropdownFilter';
 import MessageSpinner from '../components/utils/MessageSpinner';
-import CreatePlaylistModal from '../components/utils/CreatePlaylistModal';
+import CreatePlaylistForm from '../components/utils/CreatePlaylistForm';
 import appError from '../utils/appError';
 
 const Tracks = () => {
@@ -123,7 +123,7 @@ const Tracks = () => {
           />
         </Col>
         <Col className="justify-content-end">
-          <CreatePlaylistModal
+          <CreatePlaylistForm
             tracks={tracks}
             toggleInnerHTML={toggleInnerHTML}
             setErrorMessage={setErrorMessage}
