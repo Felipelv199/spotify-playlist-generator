@@ -1,17 +1,19 @@
 import { Request, Response } from 'express';
-import Bottleneck from 'bottleneck';
 import {
   createPlaylist,
-  addTracksToPlaylist,
+  addTracksUrisToPlaylist,
 } from '../../services/spotifyClient';
+import { onError } from '../../utils';
 
-const limiter = new Bottleneck({ minTime: 1000 });
-
-const buildQueriesUris = (urisLenght: number, uris: Array<string>) => {
+const buildRequestsParams = (
+  urisLenght: number,
+  uris: Array<string>,
+  headers: any,
+) => {
   const nRequests = urisLenght / 100;
   let startIndex = 0;
   let endIndex = 100;
-  const queriesUris: Array<Array<string>> = [];
+  const requestsParams: Array<any> = [];
   for (let i = 0; i < nRequests; i += 1) {
     if (i !== 0) {
       startIndex = endIndex;
@@ -22,9 +24,11 @@ const buildQueriesUris = (urisLenght: number, uris: Array<string>) => {
       endIndex = startIndex + diff;
     }
     const urisSlice = uris.slice(startIndex, endIndex);
-    queriesUris.push(urisSlice);
+    const data = { uris: urisSlice, position: 0 };
+    const config = { headers };
+    requestsParams.push({ data, config });
   }
-  return queriesUris;
+  return requestsParams;
 };
 
 const validateBody = (body: any) => {
@@ -33,7 +37,7 @@ const validateBody = (body: any) => {
     throw new Error('Missing data');
   }
   const { name, description, public: playlistPublic } = playlist;
-  if (!name || !description || !playlistPublic) {
+  if (!name || !description || playlistPublic === undefined) {
     throw new Error('Missing data');
   }
   if (tracks.length === 0) {
@@ -46,7 +50,8 @@ export const createPlaylistWithTracks = async (req: Request, res: Response) => {
   try {
     validateBody(body);
   } catch (error) {
-    res.status(400).json({ message: (error as any).message });
+    const errorMessage = onError(error);
+    res.status(400).json({ message: errorMessage });
     return;
   }
   const { clientId, playlist, token, tracks } = body;
@@ -63,28 +68,21 @@ export const createPlaylistWithTracks = async (req: Request, res: Response) => {
       headers,
       clientId,
     );
-  } catch (error) {
-    res.status(500).json({ message: (error as any).message });
+  } catch (error: any) {
+    const errorMessage = onError(error);
+    res.status(500).json({ message: errorMessage });
     return;
   }
-  const uris: Array<string> = tracks.map(
+  const tracksUris: Array<string> = tracks.map(
     (track: any) => `spotify:track:${track}`,
   );
-  const urisLenght: number = uris.length as number;
-  const queriesUris = buildQueriesUris(urisLenght, uris);
+  const urisLenght: number = tracksUris.length as number;
+  const requestsParams = buildRequestsParams(urisLenght, tracksUris, headers);
   try {
-    await limiter.schedule(() => {
-      const allTasks = queriesUris.map((queryUris: Array<string>) =>
-        addTracksToPlaylist(
-          { uris: queryUris, position: 0 },
-          headers,
-          playlistId,
-        ),
-      );
-      return Promise.all(allTasks);
-    });
-  } catch (error) {
-    res.status(500).json({ message: (error as any).message });
+    await addTracksUrisToPlaylist(requestsParams, playlistId);
+  } catch (error: any) {
+    const errorMessage = onError(error);
+    res.status(500).json({ message: errorMessage });
     return;
   }
   res.json({ message: 'Playlist created' });
