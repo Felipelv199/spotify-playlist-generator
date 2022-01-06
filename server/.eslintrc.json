@@ -24,7 +24,9 @@
     "implicit-arrow-linebreak": 0,
     "function-paren-newline": 0,
     "object-curly-newline": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "no-await-in-loop": "off",
+    "no-constant-condition": "off"
   },
   "settings": {
     "import/resolver": {
