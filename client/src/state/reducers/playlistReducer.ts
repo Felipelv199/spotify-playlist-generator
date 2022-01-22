@@ -1,7 +1,7 @@
 import { PlaylistAction, PlaylistI } from '../actions/index';
 import { PlaylistE } from '../action-types/index';
 
-const initialState: PlaylistI = { tracks: [] };
+const initialState: PlaylistI = { tracks: [], genre: '' };
 
 const reducer = (
   state: PlaylistI = initialState,
@@ -9,7 +9,9 @@ const reducer = (
 ): PlaylistI => {
   switch (action.type) {
     case PlaylistE.SET_PLAYLIST_TRACKS:
-      return { tracks: action.payload };
+      return { ...state, tracks: action.payload };
+    case PlaylistE.SET_PLAYLIST_GENRE:
+      return { ...state, genre: action.payload };
     default:
       return state;
   }

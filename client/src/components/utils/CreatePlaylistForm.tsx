@@ -1,50 +1,73 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { Button, Col, Form, Modal, Row, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Spinner from 'react-bootstrap/Spinner';
 import { actionCreators, State } from '../../state';
 import { SPOTIFY_PLAYLIST } from '../../statics/routes/server.json';
 import appError from '../../utils/appError';
 
-const { Control } = Form;
-
 interface CreatePlaylistModalProps {
-  tracks: Array<any>;
-  toggleInnerHTML: string;
   setErrorMessage: any;
   setDisplayAlert: any;
 }
 
-const CreatePlaylistModal = (
-  createPlaylistModalProps: CreatePlaylistModalProps,
-) => {
-  const { tracks, toggleInnerHTML, setDisplayAlert, setErrorMessage } =
-    createPlaylistModalProps;
-  const [playlistTracks, setPlaylistTracks] = useState<Array<any>>([]);
-  const [show, setShow] = useState(false);
-  const [playlist, setPlaylist] = useState({
-    description: '',
-    name: '',
-    public: false,
-  });
+interface Playlist {
+  name: string;
+  description: string;
+  public: boolean;
+}
+
+const playlistInitalState: Playlist = {
+  name: '',
+  description: '',
+  public: false,
+};
+
+const CreatePlaylistForm = (props: CreatePlaylistModalProps) => {
+  const { setErrorMessage, setDisplayAlert } = props;
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [playlist, setPlaylist] = useState<Playlist>(playlistInitalState);
   const [validated, setValidated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const playlistState = useSelector((state: State) => state.playlist);
+  const { tracks } = playlistState;
   const profile = useSelector((state: State) => state.profile);
   const token = useSelector((state: State) => state.auth);
   const dispatch = useDispatch();
   const { logout } = bindActionCreators(actionCreators, dispatch);
 
-  const createRequestData = () => {
-    let requestTracks = playlistTracks;
-    if (requestTracks.length === 0) {
-      requestTracks = tracks;
+  const resetPlaylist = () => {
+    setPlaylist(playlistInitalState);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    resetPlaylist();
+    setValidated(false);
+  };
+
+  const onClickButton = (event: any) => {
+    event.preventDefault();
+    setShowModal(true);
+  };
+
+  const onCloseButton = () => {
+    closeModal();
+  };
+
+  const validatePlaylistFields = () => {
+    if (playlist.description === '') {
+      return true;
     }
-    requestTracks = requestTracks.map((track) => track.id);
+    if (playlist.name === '') {
+      return true;
+    }
+    return false;
+  };
+
+  const createRequestData = () => {
+    const requestTracks = tracks.map((track) => track.id);
     return {
       clientId: profile.clientId,
       token,
@@ -53,100 +76,107 @@ const CreatePlaylistModal = (
     };
   };
 
-  const resetFields = () => {
-    setPlaylist({ ...playlist, description: '', name: '' });
-  };
-
-  const handleClick = async (event: any) => {
-    const form = event.currentTarget;
-    event.preventDefault();
-    if (form.checkValidity() === false) {
-      event.stopPropagation();
-      setValidated(true);
-    } else {
-      setShow(true);
-      const request = createRequestData();
-      try {
-        await axios.post(SPOTIFY_PLAYLIST, request);
-        setDisplayAlert(false);
-      } catch (error) {
-        if (appError.isUnauthorized(error)) {
-          logout();
-        }
-        setErrorMessage(appError.onError(error));
-        setDisplayAlert(true);
+  const uploadPlaylist = async (request: any) => {
+    try {
+      await axios.post(SPOTIFY_PLAYLIST, request);
+      setDisplayAlert(false);
+    } catch (error) {
+      if (appError.isUnauthorized(error)) {
+        logout();
       }
-      form.reset();
-      setShow(false);
-      resetFields();
-      setValidated(false);
+      setErrorMessage(appError.onError(error));
+      setDisplayAlert(true);
     }
   };
 
-  useEffect(() => {
-    if (toggleInnerHTML !== '' && tracks !== undefined) {
-      const filteredTracks: any[] = tracks.filter((track: any) =>
-        track.album.genres.some((genre: any) => genre === toggleInnerHTML),
-      );
-      setPlaylistTracks(filteredTracks);
+  const onClickModalButton = async (event: any) => {
+    event.preventDefault();
+    if (validatePlaylistFields()) {
+      setValidated(true);
+      return;
     }
-  }, [tracks, toggleInnerHTML]);
+    setIsLoading(true);
+    const request = createRequestData();
+    uploadPlaylist(request);
+    closeModal();
+    setIsLoading(false);
+  };
+
+  const onChangeForm = (event: any) => {
+    const { target } = event;
+    const { value, id } = target;
+    setPlaylist({
+      ...playlist,
+      [id]: value,
+    });
+  };
 
   return (
     <>
-      <Form noValidate validated={validated} onSubmit={handleClick}>
-        <Row className="mb-3">
-          <Col>
-            <Control
-              type="text"
-              placeholder="Enter playlist name"
-              required
-              onChange={(event: any) =>
-                setPlaylist({
-                  ...playlist,
-                  name: event.target.value,
-                })
-              }
-            />
-          </Col>
-          <Col>
-            <Control
-              as="textarea"
-              placeholder="Enter playlist description"
-              required
-              onChange={(event: any) =>
-                setPlaylist({
-                  ...playlist,
-                  description: event.target.value,
-                })
-              }
-            />
-          </Col>
-        </Row>
-        <Row style={{ justifyContent: 'end' }}>
-          <Col xs="auto">
-            <Button variant="dark" type="submit">
-              Create Playlist
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-      <Modal show={show}>
-        <Modal.Body>
-          <Row className="justify-content-center">
-            <Col xs="auto">
-              <Spinner animation="border" role="status" />
-            </Col>
-          </Row>
-          <Row className="justify-content-center">
-            <Col xs="auto">
-              <span>Creating playlist</span>
-            </Col>
-          </Row>
-        </Modal.Body>
+      <Button variant="dark" onClick={onClickButton}>
+        Create Playlist
+      </Button>
+      <Modal show={showModal}>
+        {!isLoading ? (
+          <>
+            <Modal.Header closeButton onClick={onCloseButton}>
+              <Modal.Title>Playlist</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form noValidate validated={validated}>
+                <Form.Group
+                  className="mb-3"
+                  controlId="name"
+                  onChange={onChangeForm}
+                >
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder={`Enter playlist name. Ej. ${playlistState.genre}`}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group
+                  className="mb-3"
+                  controlId="description"
+                  onChange={onChangeForm}
+                >
+                  <Form.Label>Description</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    placeholder="Enter playlist description"
+                    required
+                  />
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={onCloseButton}>
+                Close
+              </Button>
+              <Button variant="dark" onClick={onClickModalButton}>
+                Create Playlist
+              </Button>
+            </Modal.Footer>
+          </>
+        ) : (
+          <Modal.Body>
+            <Row className="justify-content-center">
+              <Col xs="auto">
+                <Spinner animation="border" role="status" />
+              </Col>
+            </Row>
+            <Row className="justify-content-center">
+              <Col xs="auto">
+                <span>Creating playlist</span>
+              </Col>
+            </Row>
+          </Modal.Body>
+        )}
       </Modal>
     </>
   );
 };
 
-export default CreatePlaylistModal;
+export default CreatePlaylistForm;

@@ -95,8 +95,6 @@ const Tracks = () => {
         </Col>
         <Col xs="auto">
           <CreatePlaylistForm
-            tracks={tracks}
-            toggleInnerHTML=""
             setErrorMessage={setErrorMessage}
             setDisplayAlert={setDisplayAlert}
           />

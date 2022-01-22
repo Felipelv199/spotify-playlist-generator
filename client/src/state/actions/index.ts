@@ -24,6 +24,7 @@ export type ProfileAction = SetProfileAction;
 
 export interface PlaylistI {
   tracks: any[];
+  genre: string;
 }
 
 interface SetPlaylistTracks {
@@ -31,4 +32,9 @@ interface SetPlaylistTracks {
   payload: any[];
 }
 
-export type PlaylistAction = SetPlaylistTracks;
+interface SetPlaylistGenre {
+  type: PlaylistE.SET_PLAYLIST_GENRE;
+  payload: string;
+}
+
+export type PlaylistAction = SetPlaylistTracks | SetPlaylistGenre;
