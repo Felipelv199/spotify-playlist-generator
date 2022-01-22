@@ -9,3 +9,7 @@ export enum AuthE {
 export enum ProfileE {
   SET_PROFILE = 'SET_PROFILE',
 }
+
+export enum PlaylistE {
+  SET_PLAYLIST_TRACKS = 'SET_PLAYLIST_TRACKS',
+}

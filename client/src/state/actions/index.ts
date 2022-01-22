@@ -1,4 +1,4 @@
-import { AuthE, ProfileE } from '../action-types';
+import { AuthE, PlaylistE, ProfileE } from '../action-types';
 
 interface LoginAction {
   type: AuthE.LOGIN;
@@ -21,3 +21,14 @@ interface SetProfileAction {
 }
 
 export type ProfileAction = SetProfileAction;
+
+export interface PlaylistI {
+  tracks: any[];
+}
+
+interface SetPlaylistTracks {
+  type: PlaylistE.SET_PLAYLIST_TRACKS;
+  payload: any[];
+}
+
+export type PlaylistAction = SetPlaylistTracks;
