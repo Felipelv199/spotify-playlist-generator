@@ -44,7 +44,10 @@ const CustomMenu = React.forwardRef((props: any, ref: any) => {
 const DropdownFilter = (dropdownFilterProps: DropdownFilterProps) => {
   const { genres, tracks, setPageNumber } = dropdownFilterProps;
   const dispatch = useDispatch();
-  const { setPlaylistTracks } = bindActionCreators(actionCreators, dispatch);
+  const { setPlaylistTracks, setPlaylistGenre } = bindActionCreators(
+    actionCreators,
+    dispatch,
+  );
   const [toggleInnerHTML, setToggleInnerHTML] = useState('all');
   const [nTracks, setNTracks] = useState<number>(0);
 
@@ -67,10 +70,11 @@ const DropdownFilter = (dropdownFilterProps: DropdownFilterProps) => {
           indexKey: index,
         })),
       );
+      setPlaylistGenre(genre);
       setNTracks(filteredTracks.length);
     };
     handleGenrefilter(toggleInnerHTML);
-  }, [toggleInnerHTML, tracks, setPlaylistTracks]);
+  }, [toggleInnerHTML, tracks, setPlaylistTracks, setPlaylistGenre]);
 
   const dropdownOnClick = (event: any) => {
     const { target } = event;

@@ -12,4 +12,5 @@ export enum ProfileE {
 
 export enum PlaylistE {
   SET_PLAYLIST_TRACKS = 'SET_PLAYLIST_TRACKS',
+  SET_PLAYLIST_GENRE = 'SET_PLAYLIST_GENRE',
 }

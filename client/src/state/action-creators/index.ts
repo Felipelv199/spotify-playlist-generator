@@ -25,3 +25,7 @@ export const setProfile =
 export const setPlaylistTracks =
   (tracks: any[]) => (dispatch: Dispatch<PlaylistAction>) =>
     dispatch({ type: PlaylistE.SET_PLAYLIST_TRACKS, payload: tracks });
+
+export const setPlaylistGenre =
+  (genre: string) => (dispatch: Dispatch<PlaylistAction>) =>
+    dispatch({ type: PlaylistE.SET_PLAYLIST_GENRE, payload: genre });
