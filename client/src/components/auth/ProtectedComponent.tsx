@@ -1,7 +1,3 @@
-/* eslint-disable react/jsx-curly-newline */
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable no-confusing-arrow */
-/* eslint-disable implicit-arrow-linebreak */
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';

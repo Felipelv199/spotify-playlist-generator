@@ -35,7 +35,10 @@ const CreatePlaylistForm = (props: CreatePlaylistModalProps) => {
   const profile = useSelector((state: State) => state.profile);
   const token = useSelector((state: State) => state.auth);
   const dispatch = useDispatch();
-  const { logout } = bindActionCreators(actionCreators, dispatch);
+  const { logout, removeProfile } = bindActionCreators(
+    actionCreators,
+    dispatch,
+  );
 
   const resetPlaylist = () => {
     setPlaylist(playlistInitalState);
@@ -83,6 +86,7 @@ const CreatePlaylistForm = (props: CreatePlaylistModalProps) => {
     } catch (error) {
       if (appError.isUnauthorized(error)) {
         logout();
+        removeProfile();
       }
       setErrorMessage(appError.onError(error));
       setDisplayAlert(true);

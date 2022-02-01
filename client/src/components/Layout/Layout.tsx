@@ -11,7 +11,10 @@ import appError from '../../utils/appError';
 const Layout = (props: any) => {
   const { children } = props;
   const dispatch = useDispatch();
-  const { logout, setProfile } = bindActionCreators(actionCreators, dispatch);
+  const { logout, setProfile, removeProfile } = bindActionCreators(
+    actionCreators,
+    dispatch,
+  );
   const [errorMessage, setErrorMessage] = useState('');
   const [displayAlert, setDisplayAlert] = useState(false);
 
@@ -27,6 +30,7 @@ const Layout = (props: any) => {
       } catch (error) {
         if (appError.isUnauthorized(error)) {
           logout();
+          removeProfile();
         }
         setErrorMessage(appError.onError(error));
         setDisplayAlert(true);
@@ -36,7 +40,7 @@ const Layout = (props: any) => {
     if (token !== null) {
       getProfile(token);
     }
-  }, [setProfile, logout]);
+  }, [setProfile, logout, removeProfile]);
 
   return (
     <div>

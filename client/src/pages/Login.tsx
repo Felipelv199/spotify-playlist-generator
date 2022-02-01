@@ -14,7 +14,10 @@ import appError from '../utils/appError';
 const Login = (props: any) => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { login, logout } = bindActionCreators(actionCreators, dispatch);
+  const { login, logout, removeProfile } = bindActionCreators(
+    actionCreators,
+    dispatch,
+  );
   const auth = useSelector((state: State) => state.auth);
   const { location } = props;
   const { search } = location;
@@ -36,12 +39,13 @@ const Login = (props: any) => {
       } catch (error) {
         if (appError.isUnauthorized(error)) {
           logout();
+          removeProfile();
         }
         setErrorMessage(appError.onError(error));
         setDisplayAlert(true);
       }
     },
-    [history, login, logout],
+    [history, login, logout, removeProfile],
   );
 
   useEffect(() => {
@@ -54,6 +58,7 @@ const Login = (props: any) => {
       } catch (error) {
         if (appError.isUnauthorized(error)) {
           logout();
+          removeProfile();
         }
         setErrorMessage(appError.onError(error));
         setDisplayAlert(true);
@@ -77,7 +82,7 @@ const Login = (props: any) => {
     } else {
       history.push(PROFILE);
     }
-  }, [search, auth, history, login, tokenSpotify, logout]);
+  }, [search, auth, history, login, tokenSpotify, logout, removeProfile]);
 
   return (
     <Container>
