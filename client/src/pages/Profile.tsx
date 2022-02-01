@@ -30,7 +30,10 @@ const { Img, Body, Text, Title, Subtitle } = Card;
 const Profile = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { logout } = bindActionCreators(actionCreators, dispatch);
+  const { logout, removeProfile } = bindActionCreators(
+    actionCreators,
+    dispatch,
+  );
   const [information, setInformation] = useState<ProfileInfo>();
   const [errorMessage, setErrorMessage] = useState('');
   const [displayAlert, setDisplayAlert] = useState(false);
@@ -48,12 +51,13 @@ const Profile = () => {
       } catch (error) {
         if (appError.isUnauthorized(error)) {
           logout();
+          removeProfile();
         }
         setErrorMessage(appError.onError(error));
         setDisplayAlert(true);
       }
     },
-    [logout],
+    [logout, removeProfile],
   );
 
   useEffect(() => {

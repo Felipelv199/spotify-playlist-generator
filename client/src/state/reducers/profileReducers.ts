@@ -10,6 +10,8 @@ const reducer = (
   switch (action.type) {
     case ProfileE.SET_PROFILE:
       return action.payload;
+    case ProfileE.REMOVE_PROFILE:
+      return initialState;
     default:
       return state;
   }

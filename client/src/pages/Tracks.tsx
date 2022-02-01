@@ -22,7 +22,10 @@ const Tracks = () => {
   const [displayAlert, setDisplayAlert] = useState(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const token = useSelector((state: State) => state.auth);
-  const { logout } = bindActionCreators(actionCreators, dispatch);
+  const { logout, removeProfile } = bindActionCreators(
+    actionCreators,
+    dispatch,
+  );
 
   const getTracks = useCallback(async () => {
     try {
@@ -46,11 +49,12 @@ const Tracks = () => {
     } catch (error) {
       if (appError.isUnauthorized(error)) {
         logout();
+        removeProfile();
       }
       setErrorMessage(appError.onError(error));
       setDisplayAlert(true);
     }
-  }, [token, logout]);
+  }, [token, logout, removeProfile]);
 
   useEffect(() => {
     if (!tracks) {

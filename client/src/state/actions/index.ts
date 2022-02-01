@@ -20,7 +20,11 @@ interface SetProfileAction {
   payload: ProfileI;
 }
 
-export type ProfileAction = SetProfileAction;
+interface RemoveProfileAction {
+  type: ProfileE.REMOVE_PROFILE;
+}
+
+export type ProfileAction = SetProfileAction | RemoveProfileAction;
 
 export interface PlaylistI {
   tracks: any[];

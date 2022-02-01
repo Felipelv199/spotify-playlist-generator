@@ -14,10 +14,18 @@ const { Brand } = Navbar;
 const Header = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { logout, login } = bindActionCreators(actionCreators, dispatch);
+  const { logout, login, removeProfile } = bindActionCreators(
+    actionCreators,
+    dispatch,
+  );
   const [logged, setLogged] = useState(false);
   const auth = useSelector((state: State) => state.auth);
   const token = window.localStorage.getItem('token');
+
+  const onClickLogout = () => {
+    logout();
+    removeProfile();
+  };
 
   useEffect(() => {
     if (token) {
@@ -62,7 +70,7 @@ const Header = () => {
               >
                 Tracks
               </Button>
-              <Button variant="dark" size="sm" onClick={() => logout()}>
+              <Button variant="dark" size="sm" onClick={onClickLogout}>
                 Logout
               </Button>
             </>

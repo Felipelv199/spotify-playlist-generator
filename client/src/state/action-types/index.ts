@@ -8,6 +8,7 @@ export enum AuthE {
 
 export enum ProfileE {
   SET_PROFILE = 'SET_PROFILE',
+  REMOVE_PROFILE = 'REMOVE_PROFILE',
 }
 
 export enum PlaylistE {

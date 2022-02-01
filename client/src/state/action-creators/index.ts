@@ -22,6 +22,10 @@ export const setProfile =
     dispatch({ type: ProfileE.SET_PROFILE, payload: profile });
   };
 
+export const removeProfile = () => (dispatch: Dispatch<ProfileAction>) => {
+  dispatch({ type: ProfileE.REMOVE_PROFILE });
+};
+
 export const setPlaylistTracks =
   (tracks: any[]) => (dispatch: Dispatch<PlaylistAction>) =>
     dispatch({ type: PlaylistE.SET_PLAYLIST_TRACKS, payload: tracks });
