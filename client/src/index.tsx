@@ -4,9 +4,9 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
-import Layout from './components/layout/Layout';
+import Layout from './components/Layout/Layout';
 import Home from './pages/Home';
-import { HOME, LOGIN, PROFILE, TRACKS } from './statics/routes/routes.json';
+import routes from './statics/routes/routes.json';
 import { store } from './state/index';
 import 'bootstrap/dist/css/bootstrap.css';
 import ProtectedComponent from './components/auth/ProtectedComponent';
@@ -19,10 +19,10 @@ ReactDOM.render(
       <BrowserRouter>
         <Layout>
           <Switch>
-            <Route exact path={HOME} component={Home} />
-            <Route exact path={LOGIN} component={Login} />
-            <ProtectedComponent exact path={PROFILE} Component={Profile} />
-            <ProtectedComponent exact path={TRACKS} Component={Tracks} />
+            <Route exact path={routes.HOME} component={Home} />
+            <Route exact path={routes.LOGIN} component={Login} />
+            <ProtectedComponent exact path={routes.PROFILE} Component={Profile} />
+            <ProtectedComponent exact path={routes.TRACKS} Component={Tracks} />
             <Route component={NotFound} />
           </Switch>
         </Layout>

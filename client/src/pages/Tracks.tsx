@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { SPOTIFY_LIBRARY_TRACKS } from '../statics/routes/server.json';
+import server from '../statics/routes/server.json';
 import { State, actionCreators } from '../state';
 import DropdownFilter from '../components/utils/DropdownFilter';
 import MessageSpinner from '../components/utils/MessageSpinner';
@@ -29,7 +29,7 @@ const Tracks = () => {
 
   const getTracks = useCallback(async () => {
     try {
-      const response = await axios.get(SPOTIFY_LIBRARY_TRACKS, {
+      const response = await axios.get(server.SPOTIFY_LIBRARY_TRACKS, {
         params: { code: token },
       });
       const { data } = response;

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { actionCreators, State } from '../../state';
-import { SPOTIFY_PLAYLIST } from '../../statics/routes/server.json';
+import server from '../../statics/routes/server.json';
 import appError from '../../utils/appError';
 
 interface CreatePlaylistModalProps {
@@ -81,7 +81,7 @@ const CreatePlaylistForm = (props: CreatePlaylistModalProps) => {
 
   const uploadPlaylist = async (request: any) => {
     try {
-      await axios.post(SPOTIFY_PLAYLIST, request);
+      await axios.post(server.SPOTIFY_PLAYLIST, request);
       setDisplayAlert(false);
     } catch (error) {
       if (appError.isUnauthorized(error)) {

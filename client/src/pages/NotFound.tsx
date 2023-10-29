@@ -3,7 +3,7 @@ import { useHistory } from 'react-router';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import { HOME } from '../statics/routes/routes.json';
+import routes from '../statics/routes/routes.json';
 
 const { Body } = Card;
 
@@ -24,7 +24,7 @@ const NotFound = () => {
           <h2>Page not found</h2>
           <Button
             size="lg"
-            onClick={() => history.push(HOME)}
+            onClick={() => history.push(routes.HOME)}
             style={{ marginTop: 75, marginBottom: 25 }}
           >
             Go back home

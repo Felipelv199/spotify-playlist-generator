@@ -1,5 +1,5 @@
 import React from 'react';
-import Hero from '../components/layout/Hero';
+import Hero from '../components/Layout/Hero';
 
 const Home = () => (
   <div>

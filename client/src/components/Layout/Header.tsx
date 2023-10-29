@@ -6,7 +6,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
-import { HOME, LOGIN, PROFILE, TRACKS } from '../../statics/routes/routes.json';
+import routes from '../../statics/routes/routes.json';
 import { State, actionCreators } from '../../state';
 
 const { Brand } = Navbar;
@@ -43,14 +43,14 @@ const Header = () => {
       <Container fluid>
         <Brand>Playlist Generator</Brand>
         <Nav className="me-auto">
-          <Button variant="dark" size="sm" onClick={() => history.push(HOME)}>
+          <Button variant="dark" size="sm" onClick={() => history.push(routes.HOME)}>
             Home
           </Button>
           {!logged ? (
             <Button
               variant="dark"
               size="sm"
-              onClick={() => history.push(LOGIN)}
+              onClick={() => history.push(routes.LOGIN)}
             >
               Login
             </Button>
@@ -59,14 +59,14 @@ const Header = () => {
               <Button
                 variant="dark"
                 size="sm"
-                onClick={() => history.push(PROFILE)}
+                onClick={() => history.push(routes.PROFILE)}
               >
                 Profile
               </Button>
               <Button
                 variant="dark"
                 size="sm"
-                onClick={() => history.push(TRACKS)}
+                onClick={() => history.push(routes.TRACKS)}
               >
                 Tracks
               </Button>

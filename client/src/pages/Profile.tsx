@@ -6,8 +6,8 @@ import { bindActionCreators } from 'redux';
 import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
-import { LOGIN } from '../statics/routes/routes.json';
-import { SPOTIFY_USERS_ME } from '../statics/routes/server.json';
+import routes from '../statics/routes/routes.json';
+import server from '../statics/routes/server.json';
 import { actionCreators } from '../state';
 import MessageSpinner from '../components/utils/MessageSpinner';
 import appError from '../utils/appError';
@@ -42,7 +42,7 @@ const Profile = () => {
     async (token: string) => {
       setDisplayAlert(false);
       try {
-        const response = await axios.get(SPOTIFY_USERS_ME, {
+        const response = await axios.get(server.SPOTIFY_USERS_ME, {
           params: { token },
         });
         const { data } = response;
@@ -65,7 +65,7 @@ const Profile = () => {
     if (token !== null && !information && !displayAlert) {
       getProfileInfo(token);
     } else if (token === null) {
-      history.push(LOGIN);
+      history.push(routes.LOGIN);
     }
   }, [history, getProfileInfo, information, displayAlert]);
 
@@ -105,7 +105,7 @@ const Profile = () => {
       >
         {images.map((image, index) => (
           <Img
-            key={index.toString()}
+            key={`img${index.toString()}`}
             src={image.url}
             alt="avatar"
             style={{ width: 250 }}

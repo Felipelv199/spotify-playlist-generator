@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { useDispatch } from 'react-redux';
 import { Alert } from 'react-bootstrap';
 import Header from './Header';
-import { SPOTIFY_USERS_ME } from '../../statics/routes/server.json';
+import server from '../../statics/routes/server.json';
 import { actionCreators } from '../../state';
 import appError from '../../utils/appError';
 
@@ -21,7 +21,7 @@ const Layout = (props: any) => {
   useEffect(() => {
     const getProfile = async (token: string) => {
       try {
-        const response = await axios.get(SPOTIFY_USERS_ME, {
+        const response = await axios.get(server.SPOTIFY_USERS_ME, {
           params: { token },
         });
         const { data } = response;

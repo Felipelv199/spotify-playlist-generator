@@ -6,8 +6,8 @@ import { bindActionCreators } from 'redux';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 import MessageSpinner from '../components/utils/MessageSpinner';
-import { PROFILE } from '../statics/routes/routes.json';
-import { SPOTIFY_AUTH, SPOTIFY_TOKEN } from '../statics/routes/server.json';
+import routes from '../statics/routes/routes.json';
+import server from '../statics/routes/server.json';
 import { actionCreators, State } from '../state';
 import appError from '../utils/appError';
 
@@ -28,14 +28,14 @@ const Login = (props: any) => {
     async (code: string) => {
       setDisplayAlert(false);
       try {
-        const response = await axios.post(SPOTIFY_TOKEN, {
+        const response = await axios.post(server.SPOTIFY_TOKEN, {
           code,
         });
         const { data } = response;
         const { token } = data;
         window.localStorage.setItem('token', token);
         login(token);
-        history.push(PROFILE);
+        history.push(routes.PROFILE);
       } catch (error) {
         if (appError.isUnauthorized(error)) {
           logout();
@@ -52,7 +52,7 @@ const Login = (props: any) => {
     const authenticateSpotify = async () => {
       setDisplayAlert(false);
       try {
-        const response = await axios.get(SPOTIFY_AUTH);
+        const response = await axios.get(server.SPOTIFY_AUTH);
         const { data } = response;
         window.location.href = data.url;
       } catch (error) {
@@ -77,10 +77,10 @@ const Login = (props: any) => {
         }
       } else {
         login(token);
-        history.push(PROFILE);
+        history.push(routes.PROFILE);
       }
     } else {
-      history.push(PROFILE);
+      history.push(routes.PROFILE);
     }
   }, [search, auth, history, login, tokenSpotify, logout, removeProfile]);
 
