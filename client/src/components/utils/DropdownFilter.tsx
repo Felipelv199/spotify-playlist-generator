@@ -91,7 +91,7 @@ const DropdownFilter = (dropdownFilterProps: DropdownFilterProps) => {
         <Menu as={CustomMenu}>
           {genres.map((genre, index) => (
             <Item
-              key={index.toString()}
+              key={`${index.toString()}`}
               eventKey={index.toString()}
               onClick={dropdownOnClick}
             >

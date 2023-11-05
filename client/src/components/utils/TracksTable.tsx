@@ -66,7 +66,7 @@ const TracksTable = (props: TracksTableProps) => {
         <thead>
           <tr>
             {tableHeaders.map((header, index) => (
-              <th key={index.toString()}>{header}</th>
+              <th key={`${index.toString()}`}>{header}</th>
             ))}
           </tr>
         </thead>
